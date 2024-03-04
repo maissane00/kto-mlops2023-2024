@@ -13,13 +13,19 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: 3.11
-      - name: Upgrade pip, install packages and run unittests
+        - name: Upgrade pip, install packages and run unittests
         run: |
           pip install --upgrade pip
           ./init_packages.sh
           pip install -r ./cats_dogs_other/requirements.txt
           pip install -r ./cats_dogs_other/label/requirements.txt
+          pip install -r ./cats_dogs_other/api/requirements.txt
+          # For tests purposes, we copy an existing .h5 file in the folder api/resources
+          # We will delete it just after the tests
+          cp ./cats_dogs_other/train/steps/tests/test/input/model/final_model.h5 ./cats_dogs_other/api/resources/model.h5 
           python -m unittest
+          rm ./cats_dogs_other/api/resources/model.h5
+
       - name: Install mlflow
         run: |
           pip install mlflow[extras]
